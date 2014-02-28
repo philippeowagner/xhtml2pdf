@@ -200,6 +200,7 @@ class PmlPageTemplate(PageTemplate):
                 self._first_flow = False
             else:
                 self._page_count = canvas.getPageNumber()
+                canvas._doctemplate._page_count = canvas.getPageNumber()
         return self._first_flow
 
     def isPortrait(self):
@@ -259,7 +260,7 @@ class PmlPageTemplate(PageTemplate):
                             if frag.pageNumber:
                                 frag.text = str(pagenumber)
                             elif frag.pageCount:
-                                frag.text = str(self._page_count)
+                                frag.text = str(canvas._doctemplate._page_count)
 
                     elif isinstance(obj, PmlTable):
                         # Flatten the cells ([[1,2], [3,4]] becomes [1,2,3,4])
@@ -527,7 +528,6 @@ class PmlParagraphAndImage(ParagraphAndImage, PmlMaxHeightMixIn):
 class PmlParagraph(Paragraph, PmlMaxHeightMixIn):
     def _calcImageMaxSizes(self, availWidth, availHeight):
         self.hasImages = False
-        availHeight = self.getMaxHeight()
         for frag in self.frags:
             if hasattr(frag, "cbDefn") and frag.cbDefn.kind == "img":
                 img = frag.cbDefn
@@ -556,7 +556,7 @@ class PmlParagraph(Paragraph, PmlMaxHeightMixIn):
         availHeight -= self.deltaHeight
 
         # Modify maxium image sizes
-        self._calcImageMaxSizes(availWidth, self.getMaxHeight() - self.deltaHeight)
+        self._calcImageMaxSizes(availWidth, availHeight)
 
         # call the base class to do wrapping and calculate the size
         Paragraph.wrap(self, availWidth, availHeight)

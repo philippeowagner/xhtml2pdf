@@ -199,6 +199,7 @@ TAGS = {
                   "qr",
                  ], "code128"),
         "humanreadable": (STRING, "0"),
+        "vertical": (STRING, "0"),
         "checksum": (STRING, "1"),
         "barwidth": SIZE,
         "barheight": SIZE,
